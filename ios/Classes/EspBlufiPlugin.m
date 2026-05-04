@@ -301,7 +301,12 @@
     }
     else if ([@"connectPeripheral" isEqualToString:call.method]) {
         NSString *peripheral = call.arguments[@"peripheral"];
-        [self connectPeripheral:self.peripheralDictionary[peripheral]];
+        ESPPeripheral *device = self.peripheralDictionary[peripheral];
+        if (device == nil) {
+            device = [[ESPPeripheral alloc] init];
+            device.uuid = [[NSUUID alloc] initWithUUIDString:peripheral];
+        }
+        [self connectPeripheral:device];
     }
     else if ([@"requestCloseConnection" isEqualToString:call.method]) {
         [self requestCloseConnection];

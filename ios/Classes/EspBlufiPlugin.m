@@ -298,6 +298,7 @@
     }
     else if ([@"stopScan" isEqualToString:call.method]) {
         [self stopScan];
+        result(nil);
     }
     else if ([@"connectPeripheral" isEqualToString:call.method]) {
         NSString *peripheral = call.arguments[@"peripheral"];
@@ -307,31 +308,39 @@
             device.uuid = [[NSUUID alloc] initWithUUIDString:peripheral];
         }
         [self connectPeripheral:device];
+        result(nil);
     }
     else if ([@"requestCloseConnection" isEqualToString:call.method]) {
         [self requestCloseConnection];
+        result(nil);
     }
     else if ([@"negotiateSecurity" isEqualToString:call.method]) {
         [self negotiateSecurity];
+        result(nil);
     }
     else if ([@"requestDeviceVersion" isEqualToString:call.method]) {
         [self requestDeviceVersion];
+        result(nil);
     }
     else if ([@"configProvision" isEqualToString:call.method]) {
         NSString *username = call.arguments[@"username"];
         NSString *password = call.arguments[@"password"];
         [self configProvisionWithSSID:username password:password];
+        result(nil);
     }
     else if ([@"requestDeviceStatus" isEqualToString:call.method]) {
         [self requestDeviceStatus];
+        result(nil);
     }
     else if ([@"requestDeviceWifiScan" isEqualToString:call.method]) {
         [self requestDeviceWifiScan];
+        result(nil);
     }
     else if ([@"sendCustomData" isEqualToString:call.method]) {
         // NSString *customData = call.arguments[@"custom_data"];
         NSString *customData = call.arguments[@"data"];
         [self postCustomData:customData];
+        result(nil);
     }
     else {
         result(FlutterMethodNotImplemented);

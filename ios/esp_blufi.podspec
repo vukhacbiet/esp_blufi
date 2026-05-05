@@ -20,7 +20,7 @@ A new Flutter plugin.
   s.dependency 'Flutter'
   s.platform = :ios, '8.0'
   s.ios.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SRCROOT)/../.symlinks/plugins/esp_blufi/ios/Classes/BlufiLibrary/Security/openssl/include" }
-  s.ios.vendored_libraries = 'Classes/BlufiLibrary/Security/openssl/*{.a}'
+  s.dependency 'OpenSSL-Universal'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386',

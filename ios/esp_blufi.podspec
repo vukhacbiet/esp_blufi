@@ -4,25 +4,34 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'esp_blufi'
-  s.version          = '0.0.6'
-  s.summary          = 'A new Flutter plugin.'
+  s.version          = '0.0.7'
+  s.summary          = 'ESP BluFi Flutter plugin with iOS Simulator support.'
   s.description      = <<-DESC
-A new Flutter plugin.
+ESP BluFi provisioning plugin. On iOS Simulator, OpenSSL stubs are used
+since BLE is not available.
                        DESC
   s.homepage         = 'https://github.com/RianOvO/esp_blufi'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'RianOvO' => 'yu.legend@outlook.com' }
   s.source           = { :path => '.' }
+
+  # source_files bao gồm cả openssl_sim_stubs.c (có #if TARGET_OS_SIMULATOR guard)
   s.source_files = 'Classes/**/*.{h,m,mm,c}'
   s.public_header_files = 'Classes/**/*.h'
-  s.private_header_files = 'Classes/BlufiLibrary/Security/openssl/include/openssl/*{.h,.cpp,.a}', 'Classes/BlufiLibrary/Security/openssl/include/*{.h,.cpp,.a}', 'Classes/BlufiLibrary/Security/openssl/*{.h,.cpp,.a}',
-  'Classes/BlufiLibrary/**/*{.h,.cpp,.a}'
+  s.private_header_files = 'Classes/BlufiLibrary/Security/openssl/include/openssl/*.h',
+                           'Classes/BlufiLibrary/Security/openssl/include/*.h',
+                           'Classes/BlufiLibrary/**/*.h'
   s.dependency 'Flutter'
   s.platform = :ios, '12.0'
-  s.ios.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SRCROOT)/../.symlinks/plugins/esp_blufi/ios/Classes/BlufiLibrary/Security/openssl/include" }
 
-  # Dùng xcframework thay cho .a để hỗ trợ cả device arm64 và simulator arm64
-  s.ios.vendored_frameworks = 'Classes/BlufiLibrary/Security/openssl/libcrypto.xcframework', 'Classes/BlufiLibrary/Security/openssl/libssl.xcframework'
-
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'ENABLE_BITCODE' => 'NO'}
+  # Link libcrypto.a & libssl.a CHỈ trên device thật (không link trên simulator)
+  # Trên simulator, openssl_sim_stubs.c cung cấp stub symbols
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    'ENABLE_BITCODE' => 'NO',
+    'HEADER_SEARCH_PATHS' => '"$(PODS_TARGET_SRCROOT)/Classes/BlufiLibrary/Security/openssl/include"',
+    'LIBRARY_SEARCH_PATHS[sdk=iphoneos*]' => '"$(PODS_TARGET_SRCROOT)/Classes/BlufiLibrary/Security/openssl"',
+    'OTHER_LDFLAGS[sdk=iphoneos*]' => '-lcrypto -lssl',
+  }
 end
+
